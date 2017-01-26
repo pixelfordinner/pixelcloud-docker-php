@@ -1,0 +1,21 @@
+version: "2"
+
+services:
+  webserver-nginx:
+    image: "pixelfordinner/nginx"
+    container_name: "phpinfo-nginx"
+    restart: unless-stopped
+    links:
+        - "upstream-php:php"
+    volumes:
+      - "./volumes/conf.d:/etc/nginx/conf.d:ro"
+      - "./volumes/www:/opt/www/:ro"
+    ports:
+      - "9090:80"
+  upstream-php:
+    image: "pixelfordinner/php-test"
+    container_name: "phpinfo-php"
+    restart: unless-stopped
+    volumes:
+      - "./volumes/www:/opt/www/"
+    hostname: "phpinfo"
