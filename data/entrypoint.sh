@@ -3,8 +3,8 @@
 # This script will use LOCAL_USER_NAME and LOCAL_USER_ID
 # as well as LOCAL_GROUP_NAME and LOCAL_GROUP_ID from env
 # and create the user and group if they don't exist
-# and then use them to start nginx with.
-# If absent, will use nginx's alpine default config: nginx:nginx
+# and then use them to start php-fpm with.
+# If absent, will use php-fpm's alpine default config: www-data:www-data
 # Not setting any env var will result in default image behaviour.
 
 USER_NAME=${LOCAL_USER_NAME:-'www-data'}

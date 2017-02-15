@@ -3,7 +3,7 @@ MAINTAINER Karl Fathi <karl@pixelfordinner.com>
 
 ENV LANG C.UTF-8
 
-ENV IMAGICK_VERSION 3.4.3RC4
+ENV IMAGICK_VERSION 3.4.3
 
 RUN apk add --no-cache \
     zip \
@@ -25,7 +25,9 @@ RUN docker-php-ext-install mysqli
 RUN docker-php-ext-install opcache
 
 # zip
-# RUN docker-php-ext-install zip
+RUN apk add --no-cache zlib-dev \
+    && docker-php-ext-install zip \
+    && apk del zlib-dev
 
 # intl
 RUN apk add --no-cache icu-dev \
@@ -49,12 +51,6 @@ RUN apk add --no-cache imagemagick-dev libtool autoconf gcc g++ make \
     && pecl install imagick-$IMAGICK_VERSION \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && apk del libtool autoconf gcc g++ make
-
-# zip
-RUN apk add --no-cache zlib-dev \
-    && docker-php-ext-install zip \
-    && apk del zlib-dev
-
 
 # Utilities
 
