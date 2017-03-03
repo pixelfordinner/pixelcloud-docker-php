@@ -1,19 +1,30 @@
-FROM php:7.1-fpm-alpine
+FROM php:7-fpm
 MAINTAINER Karl Fathi <karl@pixelfordinner.com>
 
 ENV LANG C.UTF-8
 
 ENV IMAGICK_VERSION 3.4.3
 
-RUN apk add --no-cache \
-    zip \
-    unzip \
-    less \
-    mysql-client \
-    git \
-    su-exec
+# Install utilities
+RUN apt-get update \
+    && apt-get install -y \
+        imagemagick \
+        graphicsmagick \
+        zip \
+        unzip \
+        sudo \
+        less \
+        mysql-client \
+        git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions.
+# gd
+RUN buildRequirements="libpng12-dev libjpeg-dev libfreetype6-dev" \
+    && apt-get update && apt-get install -y ${buildRequirements} \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/lib \
+    && docker-php-ext-install gd \
+    && apt-get purge -y ${buildRequirements} \
+    && rm -rf /var/lib/apt/lists/*
 
 # pdo_mysql
 RUN docker-php-ext-install pdo_mysql
@@ -21,36 +32,47 @@ RUN docker-php-ext-install pdo_mysql
 # mysqli
 RUN docker-php-ext-install mysqli
 
+# mcrypt
+RUN runtimeRequirements="re2c libmcrypt-dev" \
+    && apt-get update && apt-get install -y ${runtimeRequirements} \
+    && docker-php-ext-install mcrypt \
+    && rm -rf /var/lib/apt/lists/*
+
+# mbstring
+RUN docker-php-ext-install mbstring
+
+# intl
+RUN buildRequirements="libicu-dev g++" \
+    && apt-get update && apt-get install -y ${buildRequirements} \
+    && docker-php-ext-install intl \
+    && apt-get purge -y ${buildRequirements} \
+    && runtimeRequirements="libicu52" \
+    && apt-get install -y --auto-remove ${runtimeRequirements} \
+    && rm -rf /var/lib/apt/lists/*
+
+# imagick
+RUN runtimeRequirements="libmagickwand-6.q16-dev --no-install-recommends" \
+    && apt-get update && apt-get install -y ${runtimeRequirements} \
+    && ln -s /usr/lib/x86_64-linux-gnu/ImageMagick-6.8.9/bin-Q16/MagickWand-config /usr/bin/ \
+    && pecl install imagick-$IMAGICK_VERSION\
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+    && rm -rf /var/lib/apt/lists/*
+
 # opcache
 RUN docker-php-ext-install opcache
 
 # zip
-RUN apk add --no-cache zlib-dev \
-    && docker-php-ext-install zip \
-    && apk del zlib-dev
+RUN docker-php-ext-install zip
 
-# intl
-RUN apk add --no-cache icu-dev \
-    && docker-php-ext-install intl
+# apcu + apcu-bc (For backwards compat)
+RUN pecl install apcu \
+    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ext-apcu.ini
 
-# bz2
-RUN apk add --no-cache bzip2-dev \
-    && docker-php-ext-install bz2
-# exif
-RUN docker-php-ext-install exif
-
-# apcu
-RUN apk add --no-cache autoconf gcc g++ make \
-    && pecl install apcu \
-    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ext-apcu.ini \
-    && apk del autoconf gcc g++ make
-
-
-# Imagick
-RUN apk add --no-cache imagemagick-dev libtool autoconf gcc g++ make \
-    && pecl install imagick-$IMAGICK_VERSION \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
-    && apk del libtool autoconf gcc g++ make
+#bz2
+RUN buildRequirements="libbz2-dev g++" \
+    && apt-get update && apt-get install -y ${buildRequirements} \
+    && docker-php-ext-install bz2 \
+    && apt-get purge -y ${buildRequirements}
 
 # Utilities
 
