@@ -52,6 +52,12 @@ RUN apk add --no-cache imagemagick-dev libtool autoconf gcc g++ make \
     && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
     && apk del libtool autoconf gcc g++ make
 
+# SOAP
+RUN apk add --no-cache libxml2-dev libtool autoconf gcc g++ make \
+    && docker-php-ext-install soap \
+    && apk del libtool autoconf gcc g++ make
+
+
 # Utilities
 
 # wp-cli
