@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 
 services:
   webserver-nginx:
@@ -13,9 +13,10 @@ services:
     ports:
       - "9090:80"
   upstream-php:
-    image: "pixelfordinner/php-test"
+    image: "pixelfordinner/php-7.3"
     container_name: "phpinfo-php"
     restart: unless-stopped
+    user: "501:20"
     volumes:
       - "./volumes/www:/opt/www/"
     hostname: "phpinfo"

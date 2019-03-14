@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.3-fpm-alpine
 MAINTAINER Karl Fathi <karl@pixelfordinner.com>
 
 ENV LANG C.UTF-8
@@ -11,7 +11,7 @@ RUN apk add --no-cache \
     less \
     mysql-client \
     git \
-    su-exec
+    curl
 
 # Install PHP extensions.
 
@@ -35,16 +35,12 @@ RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev autoc
 # Utilities
 
 # wp-cli
-ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp-cli.phar
-ADD data/wp.sh /usr/local/bin/wp
-RUN chmod +rx /usr/local/bin/wp-cli.phar
-RUN chmod +x /usr/local/bin/wp
+ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
+RUN chmod +rx /usr/local/bin/wp
 
 # composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer.phar
-RUN chmod +rx /usr/local/bin/composer.phar
-ADD data/composer.sh /usr/local/bin/composer
-RUN chmod +x /usr/local/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN chmod +rx /usr/local/bin/composer
 
 RUN sed -i -e "s/pm.max_children = 5/pm.max_children = 3/g" /usr/local/etc/php-fpm.d/www.conf
 
