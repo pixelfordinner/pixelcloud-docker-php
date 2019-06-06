@@ -1,5 +1,5 @@
 FROM php:7.2-fpm-alpine
-MAINTAINER Karl Fathi <karl@pixelfordinner.com>
+LABEL maintainer="Karl Fathi <karl@pixelfordinner.com>"
 
 ENV LANG C.UTF-8
 
@@ -11,7 +11,7 @@ RUN apk add --no-cache \
     less \
     mysql-client \
     git \
-    su-exec
+    curl
 
 # Install PHP extensions.
 
@@ -35,10 +35,8 @@ RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev autoc
 # Utilities
 
 # wp-cli
-ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp-cli.phar
-ADD data/wp.sh /usr/local/bin/wp
-RUN chmod +rx /usr/local/bin/wp-cli.phar
-RUN chmod +x /usr/local/bin/wp
+ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
+RUN chmod +rx /usr/local/bin/wp
 
 # composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer.phar
@@ -62,3 +60,4 @@ VOLUME ["/opt/www"]
 EXPOSE 9000
 
 CMD ["entrypoint.sh"]
+
