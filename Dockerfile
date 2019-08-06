@@ -15,7 +15,7 @@ RUN apk add --no-cache \
 
 # Install PHP extensions.
 
-RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev autoconf g++ imagemagick imagemagick-dev libtool make \
+RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool make \
     && docker-php-ext-configure gd \
         --with-gd \
         --with-freetype-dir=/usr/include/ \
@@ -26,6 +26,7 @@ RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev autoc
     && docker-php-ext-install mysqli \
     && docker-php-ext-install opcache \
     && docker-php-ext-install soap \
+    && docker-php-ext-install intl \
     && pecl install imagick-$IMAGICK_VERSION \
     && docker-php-ext-enable imagick \
     && apk del autoconf g++ libtool make \
