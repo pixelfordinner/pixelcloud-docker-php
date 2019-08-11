@@ -15,12 +15,13 @@ RUN apk add --no-cache \
 
 # Install PHP extensions.
 
-RUN apk add --update freetype-dev libpng-dev libjpeg-turbo-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool make \
+RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool make \
     && docker-php-ext-configure gd \
         --with-gd \
         --with-freetype-dir=/usr/include/ \
         --with-png-dir=/usr/include/ \
         --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install zip \
     && docker-php-ext-install gd \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install mysqli \
