@@ -49,6 +49,7 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
     && docker-php-ext-configure exif \
     && docker-php-ext-configure mcrypt \
     && pecl install imagick-$IMAGICK_VERSION \
+    && docker-php-ext-enable imagick \
     && docker-php-ext-install zip gd mbstring mysqli opcache soap intl pdo_mysql bz2 bcmath calendar exif mcrypt
 
     RUN apk del autoconf g++ libtool make \
