@@ -1,9 +1,9 @@
-FROM php:7.3-fpm-alpine
+FROM php:7.4-fpm-alpine
 LABEL maintainer="Karl Fathi <karl@pixelfordinner.com>"
 
 ENV LANG C.UTF-8
 
-ENV IMAGICK_VERSION 3.4.3
+ENV IMAGICK_VERSION 3.4.4
 
 RUN apk add --no-cache \
     zip \
@@ -15,13 +15,11 @@ RUN apk add --no-cache \
 
 # Install PHP extensions.
 
-RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool make \
+RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev oniguruma-dev libtool make \
     && docker-php-ext-configure gd \
-        --with-gd \
-        --with-freetype-dir=/usr/include/ \
-        --with-png-dir=/usr/include/ \
-        --with-jpeg-dir=/usr/include/ \
-        --with-webp-dir=/usr/include/ \
+        --with-freetype=/usr/include/ \
+        --with-jpeg=/usr/include/ \
+        --with-webp=/usr/include/ \
     && docker-php-ext-install gd \
     && docker-php-ext-install zip \
     && docker-php-ext-install mbstring \
