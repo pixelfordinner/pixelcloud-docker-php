@@ -3,7 +3,7 @@ LABEL maintainer="Karl Fathi <karl@pixelfordinner.com>"
 
 ENV LANG C.UTF-8
 
-ENV IMAGICK_VERSION 3.4.3
+ENV IMAGICK_VERSION 3.7.0
 
 RUN apk add --no-cache \
     zip \
@@ -15,7 +15,7 @@ RUN apk add --no-cache \
 
 # Install PHP extensions.
 
-RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool make \
+RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libgomp libtool make \
     && docker-php-ext-configure gd \
         --with-gd \
         --with-freetype-dir=/usr/include/ \
