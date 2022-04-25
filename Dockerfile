@@ -3,7 +3,7 @@ LABEL maintainer="Karl Fathi <karl@pixelfordinner.com>"
 
 ENV LANG C.UTF-8
 
-ENV IMAGICK_VERSION 3.4.3
+ENV IMAGICK_VERSION 3.4.4
 
 RUN apk add --no-cache \
     zip \
