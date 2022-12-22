@@ -1,9 +1,9 @@
-FROM php:7.1-fpm-alpine
-MAINTAINER Karl Fathi <karl@pixelfordinner.com>
+FROM php:8.2-fpm-alpine
+LABEL maintainer="Karl Fathi <karl@pixelfordinner.com>"
 
 ENV LANG C.UTF-8
 
-ENV IMAGICK_VERSION 3.4.3
+ENV IMAGICK_VERSION 3.7.0
 
 RUN apk add --no-cache \
     zip \
@@ -11,60 +11,32 @@ RUN apk add --no-cache \
     less \
     mysql-client \
     git \
-    su-exec
+    curl
 
 # Install PHP extensions.
 
-# pdo_mysql
-RUN docker-php-ext-install pdo_mysql
-
-# mysqli
-RUN docker-php-ext-install mysqli
-
-# opcache
-RUN docker-php-ext-install opcache
-
-# zip
-RUN apk add --no-cache zlib-dev \
+RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool libgomp make \
+    && docker-php-ext-configure gd \
+        --with-freetype=/usr/include/ \
+        --with-jpeg=/usr/include/ \
+        --with-webp=/usr/include/ \
+    && docker-php-ext-install gd \
     && docker-php-ext-install zip \
-    && apk del zlib-dev
-
-# intl
-RUN apk add --no-cache icu-dev \
-    && docker-php-ext-install intl
-
-# bz2
-RUN apk add --no-cache bzip2-dev \
-    && docker-php-ext-install bz2
-# exif
-RUN docker-php-ext-install exif
-
-# apcu
-RUN apk add --no-cache autoconf gcc g++ make \
-    && pecl install apcu \
-    && echo "extension=apcu.so" > /usr/local/etc/php/conf.d/ext-apcu.ini \
-    && apk del autoconf gcc g++ make
-
-
-# Imagick
-RUN apk add --no-cache imagemagick-dev libtool autoconf gcc g++ make \
-    && pecl install imagick-$IMAGICK_VERSION \
-    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
-    && apk del libtool autoconf gcc g++ make
-
-# SOAP
-RUN apk add --no-cache libxml2-dev libtool autoconf gcc g++ make \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install opcache \
     && docker-php-ext-install soap \
-    && apk del libtool autoconf gcc g++ make
+    && docker-php-ext-install intl \
+    && pecl install imagick-$IMAGICK_VERSION \
+    && docker-php-ext-enable imagick \
+    && apk del autoconf g++ libtool make \
+    && rm -rf /tmp/* /var/cache/apk/*
 
 
 # Utilities
 
 # wp-cli
-ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp-cli.phar
-ADD data/wp.sh /usr/local/bin/wp
-RUN chmod +rx /usr/local/bin/wp-cli.phar
-RUN chmod +x /usr/local/bin/wp
+ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
+RUN chmod +rx /usr/local/bin/wp
 
 # composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer.phar
