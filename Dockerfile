@@ -21,6 +21,7 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
         --with-jpeg=/usr/include/ \
         --with-webp=/usr/include/ \
     && docker-php-ext-install gd \
+    && docker-php-ext-install exif \
     && docker-php-ext-install zip \
     && docker-php-ext-install mysqli \
     && docker-php-ext-install opcache \
