@@ -23,6 +23,7 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
         --with-jpeg-dir=/usr/include/ \
         --with-webp-dir=/usr/include/ \
     && docker-php-ext-install gd \
+    && docker-php-ext-install exif \
     && docker-php-ext-install zip \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install mysqli \
