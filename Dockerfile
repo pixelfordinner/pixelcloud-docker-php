@@ -15,7 +15,9 @@ RUN apk add --no-cache \
 
 # Install PHP extensions.
 
-RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool libgomp make \
+RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-dev libwebp-dev libxml2-dev icu-dev autoconf g++ imagemagick imagemagick-dev libtool libgomp make linux-headers \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
     && docker-php-ext-configure gd \
         --with-freetype=/usr/include/ \
         --with-jpeg=/usr/include/ \
@@ -36,14 +38,12 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
 # Utilities
 
 # wp-cli
-ADD https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar /usr/local/bin/wp
+RUN curl -sS https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar > /usr/local/bin/wp
 RUN chmod +rx /usr/local/bin/wp
 
 # composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer.phar
-RUN chmod +rx /usr/local/bin/composer.phar
-ADD data/composer.sh /usr/local/bin/composer
-RUN chmod +x /usr/local/bin/composer
+RUN curl -sS  https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN chmod +rx /usr/local/bin/composer
 
 RUN sed -i -e "s/pm.max_children = 5/pm.max_children = 3/g" /usr/local/etc/php-fpm.d/www.conf
 
