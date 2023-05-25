@@ -13,7 +13,7 @@ services:
     ports:
       - "9090:80"
   upstream-php:
-    image: "pixelfordinner/php-7.3"
+    image: "pixelfordinner/php:8.1"
     container_name: "phpinfo-php"
     restart: unless-stopped
     user: "501:20"
