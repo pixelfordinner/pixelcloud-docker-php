@@ -11,6 +11,7 @@ RUN apk add --no-cache \
     less \
     mysql-client \
     git \
+    libarchive-tools \
     curl
 
 # Install PHP extensions.
