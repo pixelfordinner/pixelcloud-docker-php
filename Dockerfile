@@ -25,6 +25,9 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
     && docker-php-ext-install exif \
     && docker-php-ext-install zip \
     && docker-php-ext-install mysqli \
+    && docker-php-ext-install pdo \
+    && docker-php-ext-install pdo_mysql \
+    && docker-php-ext-enable pdo_mysql \
     && docker-php-ext-install opcache \
     && docker-php-ext-install soap \
     && docker-php-ext-install intl \
