@@ -31,6 +31,7 @@ RUN apk add --update freetype-dev zlib-dev libzip-dev libpng-dev libjpeg-turbo-d
     && docker-php-ext-install opcache \
     && docker-php-ext-install soap \
     && docker-php-ext-install intl \
+    && docker-php-ext-install xml \
     && pecl install imagick-$IMAGICK_VERSION \
     && docker-php-ext-enable imagick \
     && apk del autoconf g++ libtool make \
