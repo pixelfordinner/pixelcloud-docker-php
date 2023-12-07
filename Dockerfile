@@ -63,6 +63,8 @@ RUN mkdir -p /opt/www
 
 VOLUME ["/opt/www"]
 
+WORKDIR /opt/www
+
 EXPOSE 9000
 
 CMD ["entrypoint.sh"]
